@@ -1,16 +1,19 @@
 package com.yplay;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
+
+public class PlayerActivity extends AppCompatActivity {
+
+    static final int RECEIVE_AUDIO_URL = 1;  // The request code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +26,30 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                startActivityForResult(new Intent(PlayerActivity.this, SearchActivity.class), RECEIVE_AUDIO_URL);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check the request code of the response
+        if (requestCode == RECEIVE_AUDIO_URL) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    mediaPlayer.setDataSource(data.getDataString());
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.start();
+            }
+            TextView textView = (TextView) findViewById(R.id.textView);
+            textView.setText("dsadas");
+        }
     }
 
     /*@Override

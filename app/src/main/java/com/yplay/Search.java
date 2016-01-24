@@ -45,7 +45,7 @@ public class Search {
         query("asd");
         int i = 0;
         for (SearchObject result : results) {
-            System.out.println(++i + " | " + result.getTitle() + " | " + result.getDuration() + " | " + result.getUrl());
+            System.out.println(++i + " | " + result.getTitle() + " | " + result.getDuration() + " | " + result.getId());
         }
     }
 

@@ -16,7 +16,7 @@ public class SearchObject {
         return this.title;
     }
 
-    public String getUrl() {
+    public String getId() {
         return this.id;
     }
 

@@ -1,13 +1,25 @@
 package com.yplay;
 
+import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
@@ -51,10 +63,49 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<SearchObject> results) {
+        protected void onPostExecute(final ArrayList<SearchObject> results) {
             SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), results);
             ListView listView = (ListView)  findViewById(R.id.search_listView);
             listView.setAdapter(searchAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String videoId = results.get(position).getId();
+
+                    new RetrieveAudio().execute(videoId);
+                }
+            });
+        }
+    }
+
+    private class RetrieveAudio extends AsyncTask<String, Void, Void> {
+
+        final String ANDROID_ID = Settings.Secure.getString(getApplicationContext()
+                .getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        static final int RECEIVE_AUDIO_URL = 1;  // The request code
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String videoId = params[0];
+
+            try {
+                URL url = new URL("http://192.168.56.102/YPlay/do.php?video_id=" + videoId + "&android_id=" + ANDROID_ID);
+                InputStream inputStream = url.openStream();
+
+                setResult(RECEIVE_AUDIO_URL, new Intent("http://192.168.56.102/YPlay/audio/" + ANDROID_ID + "/" + videoId + ".mp3"));
+
+                inputStream.close();
+
+                onBackPressed();
+            } catch (MalformedURLException e) {
+                System.err.println("Something went wrong: " + e.getMessage());
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
     }
 
