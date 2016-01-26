@@ -1,5 +1,6 @@
 package com.yplay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,10 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -90,14 +89,19 @@ public class SearchActivity extends AppCompatActivity {
             String videoId = params[0];
 
             try {
-                URL url = new URL("http://192.168.56.102/YPlay/do.php?video_id=" + videoId + "&android_id=" + ANDROID_ID);
+                URL url = new URL("http://82.196.0.94/do.php?video_id=" + videoId + "&android_id=" + ANDROID_ID);
                 InputStream inputStream = url.openStream();
 
-                setResult(RECEIVE_AUDIO_URL, new Intent("http://192.168.56.102/YPlay/audio/" + ANDROID_ID + "/" + videoId + ".mp3"));
+                Intent data = new Intent().putExtra("audio_url", "http://82.196.0.94/audio/" + ANDROID_ID + "/" + videoId + ".mp3");
 
                 inputStream.close();
 
-                onBackPressed();
+                if (getParent() == null) {
+                    setResult(Activity.RESULT_OK, data);
+                } else {
+                    getParent().setResult(Activity.RESULT_OK, data);
+                }
+                finish();
             } catch (MalformedURLException e) {
                 System.err.println("Something went wrong: " + e.getMessage());
                 e.printStackTrace();

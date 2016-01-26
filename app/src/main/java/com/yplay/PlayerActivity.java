@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -33,22 +34,36 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check the request code of the response
         if (requestCode == RECEIVE_AUDIO_URL) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                MediaPlayer mediaPlayer = new MediaPlayer();
+                System.out.println("WORKS");
+                final MediaPlayer mediaPlayer = new MediaPlayer();
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 try {
-                    mediaPlayer.setDataSource(data.getDataString());
+                    mediaPlayer.setDataSource(data.getExtras().getString("audio_url"));
                     mediaPlayer.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
+
+                final Button playButton = (Button) findViewById(R.id.button);
+                playButton.setText("Pause");
+                playButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                            playButton.setText("Play");
+                        }
+                        else {
+                            mediaPlayer.start();
+                            playButton.setText("Pause");
+                        }
+                    }
+                });
+
             }
-            TextView textView = (TextView) findViewById(R.id.textView);
-            textView.setText("dsadas");
         }
     }
 
