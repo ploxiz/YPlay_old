@@ -1,13 +1,21 @@
 package com.yplay;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.session.MediaController;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -34,36 +42,86 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RECEIVE_AUDIO_URL) {
-            if (resultCode == RESULT_OK) {
-                System.out.println("WORKS");
-                final MediaPlayer mediaPlayer = new MediaPlayer();
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                try {
-                    mediaPlayer.setDataSource(data.getExtras().getString("audio_url"));
-                    mediaPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaPlayer.start();
+        if (resultCode == RESULT_OK) {
+            String audioId = data.getExtras().getStringArray("audio")[0]; // TODO: check for NullPointerException
+            String audioTitle = data.getExtras().getStringArray("audio")[1]; // TODO: check for NullPointerException
+            String android_id = data.getExtras().getStringArray("audio")[2]; // TODO: check for NullPointerException
 
-                final Button playButton = (Button) findViewById(R.id.button);
-                playButton.setText("Pause");
-                playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();
-                            playButton.setText("Play");
-                        }
-                        else {
-                            mediaPlayer.start();
-                            playButton.setText("Pause");
-                        }
-                    }
-                });
+            TextView audioTitleTextView = (TextView) findViewById(R.id.audio_title_textView);
+            audioTitleTextView.setText(audioTitle);
 
+            final MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            try {
+                mediaPlayer.setDataSource("http://82.196.0.94/audio/" + android_id + "/" + audioId + ".mp3");
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                System.err.println("Something went wrong: " + e.getMessage());
+                e.printStackTrace();
             }
+            mediaPlayer.start();
+
+            // update the play button
+            final ImageButton playImageButton = (ImageButton) findViewById(R.id.play_imageButton);
+            playImageButton.setImageResource(R.drawable.pause_button);
+            playImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        playImageButton.setImageResource(R.drawable.play_button);
+                    } else {
+                        mediaPlayer.start();
+                        playImageButton.setImageResource(R.drawable.pause_button);
+                    }
+                }
+            });
+
+            // update the progressbar (seekbar)
+            final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+            seekBar.setMax(mediaPlayer.getDuration());
+
+            final Handler handler = new Handler();
+            PlayerActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int currentPosition = mediaPlayer.getCurrentPosition() / 1000;
+                    seekBar.setProgress(currentPosition);
+                    handler.postDelayed(this, 1000);
+                }
+            });
+
+           /* seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    mediaPlayer.seekTo(progress * 1000);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });*/
+
+           /* final Button playButton = (Button) findViewById(R.id.play_Button);
+            playButton.setBackgroundResource(R.drawable.pause_button);
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        playButton.setBackgroundResource(R.drawable.play_button);
+                    } else {
+                        mediaPlayer.start();
+                        playButton.setBackgroundResource(R.drawable.pause_button);
+                    }
+                }
+            });*/
         }
     }
 

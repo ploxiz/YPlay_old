@@ -2,8 +2,6 @@ package com.yplay;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -12,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -43,6 +42,14 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        Button addToPlaylistButton = (Button) findViewById(R.id.add_to_playlist_button);
+        addToPlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SearchActivity.this, PlayerActivity.class));
+            }
+        });
+
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -69,38 +76,43 @@ public class SearchActivity extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String videoId = results.get(position).getId();
+                    String[] videoInfo = {
+                            results.get(position).getId(), // the id of the video
+                            results.get(position).getTitle(), // the title of the video
+                            null // for future storing of the ANDROID_ID
+                    };
 
-                    new RetrieveAudio().execute(videoId);
+                    new RetrieveAudio().execute(videoInfo);
                 }
             });
         }
     }
 
-    private class RetrieveAudio extends AsyncTask<String, Void, Void> {
+    private class RetrieveAudio extends AsyncTask<String[], Void, Void> {
 
         final String ANDROID_ID = Settings.Secure.getString(getApplicationContext()
                 .getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        static final int RECEIVE_AUDIO_URL = 1;  // The request code
-
         @Override
-        protected Void doInBackground(String... params) {
-            String videoId = params[0];
+        protected Void doInBackground(String[]... params) {
+            String videoId = params[0][0];
+            params[0][2] = ANDROID_ID;
 
             try {
                 URL url = new URL("http://82.196.0.94/do.php?video_id=" + videoId + "&android_id=" + ANDROID_ID);
                 InputStream inputStream = url.openStream();
 
-                Intent data = new Intent().putExtra("audio_url", "http://82.196.0.94/audio/" + ANDROID_ID + "/" + videoId + ".mp3");
+                Intent data = new Intent().putExtra("audio", params[0]);
 
                 inputStream.close();
 
+                // after the conversion has been made on the server, a result is parsed to the PlayerActivity which streams the audio
                 if (getParent() == null) {
                     setResult(Activity.RESULT_OK, data);
                 } else {
                     getParent().setResult(Activity.RESULT_OK, data);
                 }
+
                 finish();
             } catch (MalformedURLException e) {
                 System.err.println("Something went wrong: " + e.getMessage());
