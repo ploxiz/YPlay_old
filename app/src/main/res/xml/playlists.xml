@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<playlist name="Michael Jackson">
-    <id name="Michael Jackson - Billie Jean">Zi_XLOBDo_Y</id>
-    <id name="Michael Jackson - They Don't Care About Us">QNJL6nfu__Q</id>
-</playlist>
+<playlists>
+
+    <playlist name="Michael Jackson">
+        <audio name="Michael Jackson - Billie Jean" id="Zi_XLOBDo_Y" />
+        <audio name="Michael Jackson - They Don't Care About Us" id="QNJL6nfu__Q" />
+    </playlist>
+
+</playlists>

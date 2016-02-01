@@ -1,4 +1,4 @@
-package com.yplay;
+package com.yplay.modules.search;
 
 public class SearchObject {
 

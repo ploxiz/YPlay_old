@@ -1,4 +1,4 @@
-package com.yplay;
+package com.yplay.modules.search;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

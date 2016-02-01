@@ -1,4 +1,4 @@
-package com.yplay;
+package com.yplay.modules.search;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+
+import com.yplay.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +27,11 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
 
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setIconified(false);
@@ -41,19 +47,6 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        Button addToPlaylistButton = (Button) findViewById(R.id.add_to_playlist_button);
-        addToPlaylistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SearchActivity.this, PlayerActivity.class));
-            }
-        });
-
-        Window window = this.getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
     }
 
     private class SearchDataTask extends AsyncTask<String, Void, ArrayList<SearchObject>> {
@@ -71,9 +64,9 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final ArrayList<SearchObject> results) {
             SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), results);
-            ListView listView = (ListView)  findViewById(R.id.search_listView);
-            listView.setAdapter(searchAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            ListView searchListView = (ListView) findViewById(R.id.search_listView);
+            searchListView.setAdapter(searchAdapter);
+            searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String[] videoInfo = {
