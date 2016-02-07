@@ -7,4 +7,10 @@
         <audio name="Michael Jackson - They Don't Care About Us" id="QNJL6nfu__Q" />
     </playlist>
 
+    <playlist name="Imagine Dragons">
+        <audio name="Imagine Dragons - It's Time" id="sENM2wA_FTg" />
+        <audio name="Imagine Dragons - On Top Of The World (Official Music Video)" id="w5tWYmIOWGk" />
+        <audio name="Imagine Dragons - Radioactive" id="ktvTqknDobU" />
+    </playlist>
+
 </playlists>

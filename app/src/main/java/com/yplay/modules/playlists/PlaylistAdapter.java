@@ -1,4 +1,4 @@
-package com.yplay.modules.search;
+package com.yplay.modules.playlists;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,21 +10,21 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.yplay.R;
-import com.yplay.modules.playlists.PlaylistsActivity;
 
 import java.util.ArrayList;
 
-public class SearchAdapter extends BaseAdapter {
+public class PlaylistAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<SearchObject> objects;
+    private ArrayList<Playlist> objects;
 
     private class ViewHolder {
-        TextView title;
-        TextView duration;
+        TextView name;
+        // TextView totalDuration;
+        // TextView audioCount;
     }
 
-    public SearchAdapter(Context context, ArrayList<SearchObject> objects) {
+    public PlaylistAdapter(Context context, ArrayList<Playlist> objects) {
         this.context = context;
         this.objects = objects;
     }
@@ -33,7 +33,7 @@ public class SearchAdapter extends BaseAdapter {
         return objects.size();
     }
 
-    public SearchObject getItem(int position) {
+    public Playlist getItem(int position) {
         return objects.get(position);
     }
 
@@ -47,23 +47,21 @@ public class SearchAdapter extends BaseAdapter {
 
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.search_listview_layout, null);
-            holder.title = (TextView) convertView.findViewById(R.id.search_title_textView);
-            holder.duration = (TextView) convertView.findViewById(R.id.search_duration_textView);
+            convertView = inflater.inflate(R.layout.playlists_listview_layout, null);
+            holder.name = (TextView) convertView.findViewById(R.id.playlists_name_textview);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(objects.get(position).getTitle());
-        holder.duration.setText(objects.get(position).getDuration());
+        holder.name.setText(objects.get(position).getName());
 
-        Button addToPlaylistButton = (Button) convertView.findViewById(R.id.search_add_to_playlist_button);
+        /*Button addToPlaylistButton = (Button) convertView.findViewById(R.id.search_add_to_playlist_button);
         addToPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, PlaylistsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
-        });
+        });*/
 
         return convertView;
     }

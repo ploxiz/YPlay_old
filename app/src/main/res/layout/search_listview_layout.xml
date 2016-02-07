@@ -7,13 +7,13 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/title_textView"
+        android:id="@+id/search_title_textView"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textColor="@color/colorAccent"
-        android:layout_toLeftOf="@+id/add_to_playlist_button"
-        android:layout_toStartOf="@+id/add_to_playlist_button" />
+        android:layout_toLeftOf="@+id/search_add_to_playlist_button"
+        android:layout_toStartOf="@+id/search_add_to_playlist_button" />
 
 
     <TextView
@@ -21,19 +21,19 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/duration_textView"
-        android:layout_below="@+id/title_textView"
+        android:id="@+id/search_duration_textView"
+        android:layout_below="@+id/search_title_textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textColor="@color/colorAccent"
-        android:layout_toLeftOf="@+id/add_to_playlist_button"
-        android:layout_toStartOf="@+id/add_to_playlist_button" />
+        android:layout_toLeftOf="@+id/search_add_to_playlist_button"
+        android:layout_toStartOf="@+id/search_add_to_playlist_button" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="+"
-        android:id="@+id/add_to_playlist_button"
+        android:id="@+id/search_add_to_playlist_button"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

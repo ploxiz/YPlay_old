@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,7 +15,10 @@ import android.widget.TextView;
 
 import com.yplay.modules.search.SearchActivity;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
+import java.util.Locale;
 
 public class PlayerActivity extends AppCompatActivity {
 
@@ -73,6 +77,11 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             });
 
+            // update the duration TextView
+            TextView durationTextView = (TextView) findViewById(R.id.player_duration_textview);
+            int duration = mediaPlayer.getDuration();
+            durationTextView.setText(Integer.toString(duration / 60000) + ":" + Integer.toString(duration % 60000));
+
             // update the progressbar (seekbar)
             final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
             seekBar.setMax(mediaPlayer.getDuration());
@@ -81,16 +90,17 @@ public class PlayerActivity extends AppCompatActivity {
             PlayerActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    int currentPosition = mediaPlayer.getCurrentPosition() / 1000;
-                    seekBar.setProgress(currentPosition);
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
                     handler.postDelayed(this, 1000);
                 }
             });
 
-           /* seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    mediaPlayer.seekTo(progress * 1000);
+                    if (fromUser) {
+                        mediaPlayer.seekTo(progress);
+                    }
                 }
 
                 @Override
@@ -102,7 +112,7 @@ public class PlayerActivity extends AppCompatActivity {
                 public void onStopTrackingTouch(SeekBar seekBar) {
 
                 }
-            });*/
+            });
 
            /* final Button playButton = (Button) findViewById(R.id.play_Button);
             playButton.setBackgroundResource(R.drawable.pause_button);

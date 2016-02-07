@@ -1,13 +1,14 @@
-package com.yplay.modules.playlist;
+package com.yplay.modules.playlists;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Playlist {
 
     private String name;
 
-    private List<String[]> audio = new ArrayList<>();
+    private List<HashMap<String, String>> audio = new ArrayList<>();
 
     public void setName(String name) {
         this.name = name;
@@ -18,11 +19,14 @@ public class Playlist {
     }
 
     public void addAudio(String title, String id) {
-        String[] pair = {title, id};
-        audio.add(audio.size(), pair);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("title", title);
+        map.put("id", id);
+
+        audio.add(map);
     }
 
-    public List<String[]> getAudio() {
+    public List<HashMap<String, String>> getAudio() {
         return this.audio;
     }
 
